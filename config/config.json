@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "eplusappChapa_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "eplusappchapa_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "user",
+    "password": "8Aa48z4~h",
+    "database": "eplusappChapa_db",
+    "host": "10.180.50.214",
+    "port": "3306",
+    "dialect": "mysql"
+  }
+}
