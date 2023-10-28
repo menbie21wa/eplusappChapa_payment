@@ -13,13 +13,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   eplusapp_chapa.init(
     {
-      amount: DataTypes.DECIMAL,
+      transaction_id:{ 
+      type:DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey:true
+                },
+      stock_id: DataTypes.INTEGER,
+      user_id: DataTypes.INTEGER,
+      amount: DataTypes.INTEGER,
       currency: DataTypes.STRING,
       first_name: DataTypes.STRING,
       email: DataTypes.STRING,
       phone_number: DataTypes.STRING,
       paymentMethod: DataTypes.STRING,
       paymentType: DataTypes.STRING,
+      unitprice: DataTypes.DECIMAL,
       public_key: DataTypes.STRING,
       return_url: DataTypes.STRING,
       callback_url: DataTypes.STRING,

@@ -27,7 +27,7 @@ exports.createPayment = (req, res, next) => {
     paymentMethod: "chapa",
     paymentType: "stock",
     public_key: public_key,
-    tx_ref: TEXT_REF,
+    tx_ref: paymentData.tx_ref,
     callback_url: CALLBACK_URL,
     return_url: RETURN_URL,
     status: "pending",
@@ -45,20 +45,22 @@ exports.createPayment = (req, res, next) => {
           console.log("response", response.data);
           const callback_data = response.data.data.checkout_url;
           let tempPaymentData = {
+            stock_id: paymentData.stock_id,
+            user_id: paymentData.user_id,
+            unitprice: paymentData.unitprice,
             amount: paymentData.amount,
-            currency: "ETB",
-            first_name: "eplusapp",
-            email: "eplusapp88@gmail.com",
-            phone_number: "0912345678",
+            currency: paymentData.currency,
+            first_name: paymentData.firstName,
+            email: paymentData.email,
+            phone_number: paymentData.phone_number,
             paymentMethod: "chapa",
-            paymentType: "stock",
+            paymentType: paymentData.paymentType,
             public_key: public_key,
-            tx_ref: TEXT_REF,
+            tx_ref: paymentData.tx_ref,
             callback_url: callback_data,
             return_url: RETURN_URL,
             status: "pending",
           };
-          // console.log("tempPayment : ", tempPaymentData.callback_url);
 
           paymentDal.create(tempPaymentData, (err, data) => {
             if (err) {
@@ -78,8 +80,10 @@ exports.createPayment = (req, res, next) => {
 };
 
 exports.getSingleTransaction = (req, res, next) => {
-  let { id } = req.params;
-  paymentDal.getByPk(id, (err, payid) => {
+ 
+  let { tx_ref } = req.body;
+  console.log(req.body);
+  paymentDal.getByPk(tx_ref, (err, payid) => {
     if (err) {
       res.status(500).json({
         message: "ሰርቨሩ እየሰራ አይደለም",
@@ -92,7 +96,7 @@ exports.getSingleTransaction = (req, res, next) => {
     } else {
       res.status(400).json({
         message: "በዚህ መለያ የተመዘገበ ጨረታ የለም",
-      });
+      }); 
       return;
     }
   });
