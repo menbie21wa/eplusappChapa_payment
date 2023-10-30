@@ -101,6 +101,74 @@ exports.getSingleTransaction = (req, res, next) => {
     }
   });
 };
+exports.getUserStocks = (req, res) => {
+  let { id } = req.params;
+
+  paymentDal.getByUserId(id, (err, data) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Server error"+err,
+      });
+    }
+    if (Array.isArray(data)) {
+      // Create an array to store the promises
+      const promises = data.map(element => {
+        return axios.get(`http://localhost:11214/stockapi/stocks/${element.stock_id}`)
+          .then(response => response.data)
+          .catch(error => {
+            // Handle any errors that occur during the request
+            console.error(`Error fetching data for stock_id ${element.stock_id}:`, error);
+            return null; // or handle the error in an appropriate way
+          });
+      });
+    
+      // Wait for all the promises to resolve
+      Promise.all(promises)
+        .then(output => {
+          const result = {data,output}
+          res.status(200).json(result);
+        })
+        .catch(error => {
+          // Handle any errors that occur during Promise.all()
+          console.error('Error retrieving stock data:', error);
+          res.status(500).json({ error: 'Internal server error' });
+        });
+    }
+    else if(typeof data ==='object')
+    {
+      axios.get(`http://localhost:11214/stockapi/stocks/${data.stock_id}`)
+        .then(response => {
+          res.status(200).json(response.data);
+        })
+        .catch(error => {
+          // Handle any errors that occur during the request
+          console.error(`Error fetching data for stock_id ${data.stock_id}:`, error);
+          res.status(500).json({ error: 'Internal server error' });
+        });
+    } else {
+      res.status(400).json({ error: 'Invalid data type' });
+    }
+    //  let config2 = {
+    //   method: 'get',
+    //   maxBodyLength: Infinity,
+    //   url: `http://localhost:11214/stockapi/stocks/10`,
+    //   headers: { }
+    // };
+
+    // axios.request(config2)
+    // .then((response) => {
+    //  // res.status(200).json(response);
+    //  const responseData = response.data;
+
+    //   // Send the extracted data as the response
+    //   res.status(200).json(data);
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+    
+  });
+};
 // axios
 // .get(
 //   "https://api.chapa.co/v1/transaction/verify/" + "eplusapp-ty-345600",

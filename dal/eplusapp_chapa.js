@@ -21,3 +21,14 @@ exports.getByPk = async (query, cb) => {
     return cb(err);
   }
 };
+exports.getByUserId = async (userId, cb) => {
+  try {
+    const payments = await EplusappPayment.findAll({
+      where: { user_id: userId },
+    });
+    
+    return cb(null, payments);
+  } catch (err) {
+    return cb(err);
+  }
+};
